@@ -56,7 +56,9 @@ ROOT_URLCONF = 'textbook.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+             './textbook/html_files/',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,16 +125,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
-TEMPLATE_DIRS = (
-    os.path.join(SETTINGS_PATH, 'html_files/'),
-)
-
-TEMPLATES = [
-    {
-        'DIRS': [
-            '/Users/kevinverre/code/GenerateTextbook/textbook/textbook/html_files',
-        ],
-    },
-] 
