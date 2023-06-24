@@ -1,0 +1,4 @@
+homebrew/
+.vscode/
+secret_values.py
+*.swp
