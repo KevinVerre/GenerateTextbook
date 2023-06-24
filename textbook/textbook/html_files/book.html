@@ -3,15 +3,17 @@
         <title>Your book</title>
     </head>
     <body>
-        <h3>Your Book Title</h3>
-        <h1>{{ book.title }}</h1>
+        <h4>Your Book Title:</h4>
+        <h1>"{{ book.title }}: A Humble Explanation"</h1>
         <hr>
-        {% for chapter in chapters %}
+        {% for chapter in book.chapters %}
+        <div>
             <h4>Chapter Title</h4>
             <h2>{{ chapter.chapter_title }}</h2>
             <div>
                 {{ chapter.chapter_content }}
             </div>
+        </div>
         {% endfor %}
     </body>
 </html>

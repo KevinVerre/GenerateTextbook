@@ -21,17 +21,24 @@ def get_user_input_plus_our_prompt(the_user_response):
     # return input("Enter your message: ")
 
 def ask_gpt_to_list_topics(raw_user_input):
-    my_prmopt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of ten topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
+    my_prompt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of ten topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
+    print("**********************")
+    print("Asking GPT To Generate a list of Topics")
+    print("**********************")
+    print(my_prompt)
+    print("**********************")
+
+    
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {
                 "role": "system",
-                "content": my_prmopt
+                "content": my_prompt
             },
             {
                 "role": "user",
-                "content": my_prmopt
+                "content": my_prompt
             }
         ]
     )
@@ -51,10 +58,18 @@ def divide_response_into_subtopics(gpt_response):
 
         counter += 1
 
+    print("**********************")
+    print("List of Topics:")
+    print("**********************")
+    for topic in topics:
+        print(topic)
+    print("**********************")
+
 
     return topics
 
 def get_chapter_for_subtopic(subtopic):
+    print(f"Trying to create a chapter about '{subtopic}'. Please be patient...")
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -68,6 +83,8 @@ def get_chapter_for_subtopic(subtopic):
             }
         ]
     )
+    result = response.choices[0].message['content']
+    print(f"Done! Here is the result: {result}")
     return response.choices[0].message['content']
 
 
@@ -101,13 +118,9 @@ def generate_textbook_from_user_input(raw_input):
     print(f"{gpt_response}")
     subtopics = divide_response_into_subtopics(gpt_response)
     print(subtopics)
-    breakpoint()
     subtopic_chapters = []
     for subtopic in subtopics:
-        print("\n\n")
-        print(f"CHAPTER: {subtopic}")
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
-        print(f"{subtopic_chapter}")
         new_chapter = {
             'chapter_title': subtopic,
             'chapter_content': subtopic_chapter,
@@ -117,6 +130,7 @@ def generate_textbook_from_user_input(raw_input):
         'title': f"Your Textbook About {raw_input}",
         'chapters': subtopic_chapters, 
     }
+    print(f"textbook: {textbook}")
     return textbook
 
     
