@@ -152,7 +152,7 @@ def generate_textbook_from_user_input(raw_input):
         }
         subtopic_chapters.append(new_chapter)
     textbook = {
-        'title': f"{raw_input.capitalize()}: A Humble Explanation",
+        'title': f"{raw_input.title()}: A Humble Explanation",
         'chapters': subtopic_chapters, 
     }
     print(f"textbook: {textbook}")
