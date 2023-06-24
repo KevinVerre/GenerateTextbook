@@ -46,7 +46,36 @@ def get_chapter_for_subtopic(subtopic):
     )
     return response.choices[0].message['content']
 
+
+from pymongo import MongoClient
+def test_putting_something_in_database():
+    print('Starting test_putting_something_in_database()')
+    test_data = {
+        "prompt": "testing 123",
+        "response": "fake response",
+    }
+
+    # CONNECTION_STRING = "mongodb+srv://user:pass@localhost/myFirstDatabase"
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    collection = db['test_collection_1']
+    collection.insert_one(test_data)
+
+    cursor = collection.find({})
+    for document in cursor:
+          print(document)
+
+    print('End test_putting_something_in_database()')
+    return
+
+
 def main():
+    print("starting main()")
+    test_putting_something_in_database()
+    print("Ending main()")
+    return
+
     # while True:
     user_input_plus_our_prompt = get_user_input_plus_our_prompt()
     gpt_response = send_to_gpt(user_input_plus_our_prompt)
@@ -61,3 +90,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
