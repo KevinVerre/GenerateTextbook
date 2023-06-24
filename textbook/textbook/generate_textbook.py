@@ -2,6 +2,7 @@ import openai
 import os
 import sys
 from django.utils.safestring import mark_safe
+from bson import ObjectId
 
 sys.path.append("..")
 from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
@@ -9,8 +10,8 @@ from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
-
-NUMBER_OF_CHAPTERS = 1
+DEBUG = False
+NUMBER_OF_CHAPTERS = 3
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -24,6 +25,9 @@ def get_user_input_plus_our_prompt(the_user_response):
     # return input("Enter your message: ")
 
 def ask_gpt_to_list_topics(raw_user_input):
+    if DEBUG:
+        return "1. Music\n2.Dance\n3.Singing"
+    
     my_prompt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of ten topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
     print("**********************")
     print("Asking GPT To Generate a list of Topics")
@@ -52,14 +56,14 @@ def divide_response_into_subtopics(gpt_response):
     topics = []
     counter = 0
     for line in lines:
-        if counter > NUMBER_OF_CHAPTERS:
+        if counter >= NUMBER_OF_CHAPTERS:
             break
         if line == '':
             continue # Skip blank lines
         if line[0].isdigit():
             topics.append(line) # if it starts with a digit, it's probably a good subtopic
-
-        counter += 1
+            counter += 1
+        
 
     print("**********************")
     print("List of Topics:")
@@ -73,6 +77,11 @@ def divide_response_into_subtopics(gpt_response):
 
 def get_chapter_for_subtopic(subtopic):
     print(f"Trying to create a chapter about '{subtopic}'. Please be patient...")
+
+    if DEBUG:
+        return f"Here is an example chapter about {subtopic}. Blah blah blah."
+
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -113,7 +122,20 @@ def test_putting_something_in_database():
     print('End test_putting_something_in_database()')
     return
 
+def save_a_new_book_to_our_books_table(book):
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+    result = books_collection.insert_one(book)
+    new_book_id = str(result.inserted_id)
 
+    found_new_book = books_collection.find_one({"_id": ObjectId(new_book_id)})
+
+    books_collection.update_one({"_id": ObjectId(new_book_id)}, {"$set": {"book_id": new_book_id}})
+
+    return new_book_id
+    
 
 def generate_textbook_from_user_input(raw_input):
     gpt_response = ask_gpt_to_list_topics(raw_input)
@@ -134,7 +156,11 @@ def generate_textbook_from_user_input(raw_input):
         'chapters': subtopic_chapters, 
     }
     print(f"textbook: {textbook}")
+    new_book_id = save_a_new_book_to_our_books_table(textbook)
+    textbook['book_id'] = new_book_id
     return textbook
+
+
 
     
 def main():

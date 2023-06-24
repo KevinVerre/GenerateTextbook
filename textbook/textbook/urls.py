@@ -28,6 +28,8 @@ urlpatterns = [
     path('create/', views.handle_form_submission),
     path('books', views.show_textbook_list),
     path('books/', views.show_textbook_list),
+    path('book', views.show_single_textbook),
+    path('book/', views.show_single_textbook),
     path('/', views.homepage),
     path('', views.homepage),
 ]

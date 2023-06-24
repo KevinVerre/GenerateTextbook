@@ -1,8 +1,17 @@
+{% load textbook_tags %}
 <html>
     <head>
         <title>Book list!</title>
     </head>
     <body>
         We will put a list of Books here and links to each book.
+        
+        {% for book_row in all_books %}
+
+            <div>
+                <a href="/book?id={{book_row.book_id}}">{{ book_row.title }}</a>
+            </div>
+
+        {% endfor %}
     </body>
 </html>

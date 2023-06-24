@@ -1,4 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from bson import ObjectId
+from django.shortcuts import redirect, render, HttpResponse
+from pymongo import MongoClient
 from textbook.generate_textbook import generate_textbook_from_user_input
 
 def heythere(request):
@@ -18,23 +20,56 @@ def form_for_your_own_new_textbook(request):
 # This function is going to send a bunch of requests to Chat GPT
 # This function is going to store chat GPT's responses in the database
 def handle_form_submission(request):
-    user_input_str = request.POST.get('user_input')
-    context = {
-        'user_input_str': user_input_str,
-    }
+    user_input_str = request.POST.get('user_input', '')
 
     textbook_from_user_input = generate_textbook_from_user_input(user_input_str)
-    context['book'] = textbook_from_user_input
+    new_book_id = textbook_from_user_input.get('book_id')
+    print(f"Created a new Book with ID: {new_book_id}")
+    return redirect(f'/book?id={new_book_id}')
 
-    return render(request, 'book.html', context)
+
+def given_a_id_return_a_book_with_that_id():
+    return
+
 
 # GET request. Given a textbook id number, show the contents of that textbook
 def show_single_textbook(request):
-    return
+    book_id_requested_by_user = request.GET.get('id')
+    print(book_id_requested_by_user)
+
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+
+    # my_id_str = "64977324c335fdd18efa2d7f"
+    my_id_str = book_id_requested_by_user
+
+    objInstance = ObjectId(my_id_str)
+    my_book = books_collection.find_one({"_id": objInstance})
+
+    context = {
+        'book': {
+            'title': my_book.get('title'),
+            'chapters': my_book.get('chapters'),
+        }
+    }
+    return render(request, 'book.html', context)
 
 # Ask the database for all of the textbooks that anyone has generated so far
 # List the titles of each textbook
 # Each textbook title should link to that textboook's single textbook page
 def show_textbook_list(request):
-    context = {}
+
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+
+    all_books_in_db = books_collection.find()
+
+    context = {
+        'all_books': all_books_in_db,
+    }
+
     return render(request, 'book_list.html', context)
