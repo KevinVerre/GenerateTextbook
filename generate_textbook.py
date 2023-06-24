@@ -4,14 +4,14 @@ from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
-def get_user_input():
+def get_user_input_plus_our_prompt():
     print("Enter a topic you want to learn about. Then hit enter:")
     the_user_response = input("")
     return f"{the_user_response} for high school students"
     # return "Evolutionary biology for high school students"
     # return input("Enter your message: ")
 
-def send_to_gpt(user_input):
+def send_to_gpt(user_input_plus_our_prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -21,7 +21,7 @@ def send_to_gpt(user_input):
             },
             {
                 "role": "user",
-                "content": user_input
+                "content": user_input_plus_our_prompt
             }
         ]
     )
@@ -48,8 +48,8 @@ def get_chapter_for_subtopic(subtopic):
 
 def main():
     # while True:
-    user_input = get_user_input()
-    gpt_response = send_to_gpt(user_input)
+    user_input_plus_our_prompt = get_user_input_plus_our_prompt()
+    gpt_response = send_to_gpt(user_input_plus_our_prompt)
     print("GPT-3.5 response:")
     print(f"{gpt_response}")
     subtopics = divide_response_into_subtopics(gpt_response)
