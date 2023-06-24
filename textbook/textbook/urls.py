@@ -22,4 +22,12 @@ from . import views
 urlpatterns = [
     path('hello', views.heythere),
     path('admin/', admin.site.urls),
+    path('new',views.form_for_your_own_new_textbook),
+    path('new/',views.form_for_your_own_new_textbook),
+    path('create', views.handle_form_submission),
+    path('create/', views.handle_form_submission),
+    path('books', views.show_textbook_list),
+    path('books/', views.show_textbook_list),
+    path('/', views.homepage),
+    path('', views.homepage),
 ]
