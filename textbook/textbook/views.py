@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse
+from textbook.generate_textbook import generate_textbook_from_user_input
 
 def heythere(request):
     return render(request, 'kevins_demo.html')
@@ -21,6 +22,10 @@ def handle_form_submission(request):
     context = {
         'user_input_str': user_input_str,
     }
+
+    textbook_from_user_input = generate_textbook_from_user_input(user_input_str)
+    context['book'] = textbook_from_user_input
+
     return render(request, 'book.html', context)
 
 # GET request. Given a textbook id number, show the contents of that textbook

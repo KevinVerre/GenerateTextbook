@@ -3,6 +3,15 @@
         <title>Your book</title>
     </head>
     <body>
-        Your new textbook all about: "{{ user_input_str }}"
+        <h3>Your Book Title</h3>
+        <h1>{{ book.title }}</h1>
+        <hr>
+        {% for chapter in chapters %}
+            <h4>Chapter Title</h4>
+            <h2>{{ chapter.chapter_title }}</h2>
+            <div>
+                {{ chapter.chapter_content }}
+            </div>
+        {% endfor %}
     </body>
 </html>
