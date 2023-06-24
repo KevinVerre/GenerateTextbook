@@ -11,9 +11,9 @@
         <p>This book has {{book.chapters|length}} chapters.</p>
         <hr>
         {% for chapter in book.chapters %}
+        <br><br>
         <div>
-            <h4>Chapter Title:</h4>
-            <h2>{{ chapter.chapter_title }}</h2>
+            <h4>Chapter Title: {{ chapter.chapter_title }}</h4>
             <div style="width: 90%">
                 <iframe srcdoc="{{ chapter.chapter_content }}"
                     style="width: 80%; height: 100%"
@@ -21,6 +21,8 @@
                 </iframe>
             </div>
         </div>
+        <hr>
+        <br><br>
         {% endfor %}
     </body>
 </html>
