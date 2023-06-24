@@ -3,12 +3,16 @@
         <title>Your book</title>
     </head>
     <body>
-        <h4>Your Book Title:</h4>
+        <a href="/books">BACK to List of Text Books</a><br>
+        <a href="/new">Create a New Text Book</a><br>
+        <a href="/">BACK to Home Page</a><br>
+        <h4>Book Title:</h4>
         <h1>"{{ book.title }}"</h1>
+        <p>This book has {{book.chapters|length}} chapters.</p>
         <hr>
         {% for chapter in book.chapters %}
         <div>
-            <h4>Chapter Title</h4>
+            <h4>Chapter Title:</h4>
             <h2>{{ chapter.chapter_title }}</h2>
             <div style="width: 90%">
                 <iframe srcdoc="{{ chapter.chapter_content }}"

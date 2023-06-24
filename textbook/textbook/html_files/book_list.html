@@ -4,7 +4,11 @@
         <title>Book list!</title>
     </head>
     <body>
-        We will put a list of Books here and links to each book.
+        <div>
+            <a href="/">BACK to Home Page</a><br><br><br>
+        </div>
+        <div>
+        We will put a list of Books here and links to each book.<br><br>
         
         {% for book_row in all_books %}
 
@@ -13,5 +17,6 @@
             </div>
 
         {% endfor %}
+        </div>
     </body>
 </html>
