@@ -1,8 +1,11 @@
 import openai
 import os
 import sys
+from django.utils.safestring import mark_safe
+
 sys.path.append("..")
 from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
+
 
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
@@ -49,7 +52,7 @@ def divide_response_into_subtopics(gpt_response):
     topics = []
     counter = 0
     for line in lines:
-        if counter >= NUMBER_OF_CHAPTERS:
+        if counter > NUMBER_OF_CHAPTERS:
             break
         if line == '':
             continue # Skip blank lines
@@ -75,7 +78,7 @@ def get_chapter_for_subtopic(subtopic):
         messages=[
             {
                 "role": "system",
-                "content": "You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a high school level."
+                "content": "You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a high school level. Your response should be formatted as HTML."
             },
             {
                 "role": "user",
@@ -123,11 +126,11 @@ def generate_textbook_from_user_input(raw_input):
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
         new_chapter = {
             'chapter_title': subtopic,
-            'chapter_content': subtopic_chapter,
+            'chapter_content': mark_safe(subtopic_chapter),
         }
         subtopic_chapters.append(new_chapter)
     textbook = {
-        'title': f"Your Textbook About {raw_input}",
+        'title': f"{raw_input.capitalize()}: A Humble Explanation",
         'chapters': subtopic_chapters, 
     }
     print(f"textbook: {textbook}")

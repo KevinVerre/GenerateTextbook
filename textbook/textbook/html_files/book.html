@@ -4,14 +4,17 @@
     </head>
     <body>
         <h4>Your Book Title:</h4>
-        <h1>"{{ book.title }}: A Humble Explanation"</h1>
+        <h1>"{{ book.title }}"</h1>
         <hr>
         {% for chapter in book.chapters %}
         <div>
             <h4>Chapter Title</h4>
             <h2>{{ chapter.chapter_title }}</h2>
-            <div>
-                {{ chapter.chapter_content }}
+            <div style="width: 90%">
+                <iframe srcdoc="{{ chapter.chapter_content }}"
+                    style="width: 80%; height: 100%"
+                >
+                </iframe>
             </div>
         </div>
         {% endfor %}
