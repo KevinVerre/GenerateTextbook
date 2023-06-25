@@ -1,0 +1,17 @@
+.rotate {
+    animation: rotation 64s infinite linear;
+}
+  
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+.round {
+    border-radius: 100%;
+    border: solid 5px black;
+}

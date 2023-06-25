@@ -1,23 +1,36 @@
 <html>
     <head>
+        <link rel="stylesheet" href="/static/textbook.css">
         <title>
             Create A Textbook!
         </title>
     </head>
     <body>
-        <div>
+        <div id="form-div">
             <h1>
                 What do you want your textbook to be about?
             </h1>
-            <form method="POST" action="/create">
+            <form method="POST" action="/create" onsubmit="enter_loading_mode()">
                 {% csrf_token %}
                 <input name="user_input" autofocus/>
-                <input type="submit" />
+                <input type="submit"/>
             </form>
         </div>
-        <div>
-            <img src="/static/robot_writing_book.png" style="width: 75%; height:75%"/>
+        <div id="loading-div" hidden>
+            <center>
+                <h4>Beep boop! Beep boop!</h4>
+                <p>Your AI Generated Textbook is being written!</p>
+                <img class="rotate round" src="/static/robot_writing_book.png" style="width: 30%;"/>
+            </center>
         </div>
 
     </body>
+    <script>
+        function enter_loading_mode() {
+            var loadingDiv = document.getElementById('loading-div');
+            loadingDiv.setAttribute("style", "display:block");
+            var formDiv = document.getElementById('form-div');
+            formDiv.setAttribute('style', 'display:none');
+        }
+    </script>
 </html>

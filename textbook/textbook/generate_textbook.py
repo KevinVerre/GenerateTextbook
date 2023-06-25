@@ -14,6 +14,8 @@ openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with 
 DEBUG = False
 NUMBER_OF_CHAPTERS = 3
 EDUCATION_LEVEL = 'simple college'
+# MODEL = 'text-davinci-003'
+MODEL = 'gpt-3.5-turbo'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -38,7 +40,7 @@ def ask_gpt_to_list_topics(raw_user_input):
 
     
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=[
             {
                 "role": "system",
@@ -83,7 +85,7 @@ def get_chapter_for_subtopic(subtopic):
         return f"Here is an example chapter about {subtopic}. Blah blah blah."
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=MODEL,
         messages=[
             {
                 "role": "system",
