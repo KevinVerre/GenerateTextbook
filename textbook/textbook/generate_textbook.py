@@ -67,6 +67,14 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
     if DEBUG:
         return f"Blah blah blah. Example text for {system_content} and {user_content}"
     
+    print("************************************")
+    print("ASKING CHAT GPT")
+    print("************************************")
+    print(f"System Prompt:\n{system_content}")
+    print("\n\n")
+    print(f"User Prompt:\n{user_content}")
+    print("************************************")
+
     response = openai.ChatCompletion.create(
         model=MODEL,
         messages=[
@@ -81,7 +89,8 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
         ]
     )
     result = response.choices[0].message['content']
-    print(f"Done! Here is the result: {result}")
+    print(f"Done! Here is the result:\n{result}")
+    print("**************************************")
     return response.choices[0].message['content']
 
 
@@ -93,6 +102,10 @@ def get_chapter_for_subtopic(subtopic):
 
 def get_discussion_questions_for_subtopic(subtopic):
     system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} discussion questions about {subtopic} for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
+    return ask_chat_gpt_and_get_response(system_content, system_content)
+
+def get_test_prep_questions_for_subtopic(subtopic):
+    system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} questions about {subtopic} that might appear on a test for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
     return ask_chat_gpt_and_get_response(system_content, system_content)
 
 
@@ -142,10 +155,12 @@ def generate_textbook_from_user_input(raw_input):
     for subtopic in subtopics:
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
         subtopic_discussion_questions = get_discussion_questions_for_subtopic(subtopic)
+        test_prep_questions = get_test_prep_questions_for_subtopic(subtopic)
         new_chapter = {
             'chapter_title': subtopic,
             'chapter_content': subtopic_chapter,
             'subtopic_discussion_questions': subtopic_discussion_questions,
+            'test_prep_questions': test_prep_questions,
         }
         subtopic_chapters.append(new_chapter)
     textbook = {

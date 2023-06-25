@@ -52,10 +52,13 @@ def show_single_textbook(request):
     for chapter in my_book.get('chapters', []):
         content_reformatted = get_body_contents_from_html_file(chapter.get('chapter_content', ''))
         discussion_questions_reformatted = get_body_contents_from_html_file(chapter.get('subtopic_discussion_questions', ''))
+        test_prep_questions_reformatted = get_body_contents_from_html_file(chapter.get('test_prep_questions', ''))
+
         reformatted_chapter = {
             **chapter,
             'chapter_content': content_reformatted,
             'discussion_questions_reformatted': discussion_questions_reformatted,
+            'test_prep_questions_reformatted': test_prep_questions_reformatted,
         }
         chapters_reformatted.append(reformatted_chapter)
 

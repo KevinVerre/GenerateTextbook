@@ -20,21 +20,34 @@
         <p>This book has {{book.chapters|length}} chapters.</p>
         <hr>
 
+        <div style="padding: 20px; background-color: #f4f4f4; border: solid 2px #CCC;">
+            <h3>Table of Contents</h3>
+            {% for chapter in book.chapters %}
+                {{ chapter.chapter_title.title }}
+            {% endfor %}
+        </div>
 
         {% for chapter in book.chapters %}
         <br><br>
         <div style="width: 90%;">
-            <div>
+            <div style="background-color: #eee8ff; padding: 5px; border: solid 1px rgb(153, 0, 153);">
                 <h4>Chapter Title: {{ chapter.chapter_title.title }}</h4>
             </div>
             <div style="width: 90%">
                 {{ chapter.chapter_content }}
             </div>
             <br><br>
-            <div style="background-color: #EFE; padding:30px; border: solid 1px #8C8">
+            <div style="background-color: #EFE; padding:15px; border: solid 1px #8C8">
                 <h5>Discussion questions!</h5>
                 <div>
                     {{ chapter.discussion_questions_reformatted }}
+                </div>
+            </div>
+            <br><br>
+            <div style="background-color: #FEE; padding:15px; border: solid 1px #C88">
+                <h5>Test prep questions!</h5>
+                <div>
+                    {{ chapter.test_prep_questions_reformatted }}
                 </div>
             </div>
         </div>
