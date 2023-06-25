@@ -1,19 +1,20 @@
 {% load textbook_tags %}
 <html>
     <head>
-        <title>Book list!</title>
+        <title>Book List!</title>
     </head>
-    <body>
+    <body style="margin:3rem; font-size:1.0rem; margin-left: 5rem;">
         <div>
             <a href="/">BACK to Home Page</a><br><br><br>
         </div>
         <div>
-        We will put a list of Books here and links to each book.<br><br>
-        
+        -----------------------------------------<br><br>
+        Number of books in database: {{ number_books }}<br>
+        -----------------------------------------<br><br>
         {% for book_row in all_books %}
 
             <div>
-                <a href="/book?id={{book_row.book_id}}">{{ book_row.title.title }}</a><br><br>
+                <a href="/book?id={{book_row.book_id}}">{{ forloop.counter }}. {{ book_row.title.title }}</a><br><br>
             </div>
 
         {% endfor %}

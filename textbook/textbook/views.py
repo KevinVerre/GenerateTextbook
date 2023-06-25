@@ -83,9 +83,11 @@ def show_textbook_list(request):
     books_collection = db['books']
 
     all_books_in_db = books_collection.find()
+    number_books = books_collection.count_documents({})
 
     context = {
         'all_books': all_books_in_db,
+        'number_books': number_books,
     }
 
     return render(request, 'book_list.html', context)
