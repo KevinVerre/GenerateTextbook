@@ -12,11 +12,11 @@ from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
 DEBUG = False
-NUMBER_OF_CHAPTERS = 1
+NUMBER_OF_CHAPTERS = 5
 EDUCATION_LEVEL = 'simple college'
 MODEL = 'gpt-3.5-turbo'
 NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
-NUMBER_OF_ADDITIONAL_RESOURCES = 'three'
+NUMBER_OF_ADDITIONAL_RESOURCES = 'five'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -32,11 +32,6 @@ def ask_gpt_to_list_topics(raw_user_input):
         return "1. Music\n2.Dance\n3.Singing"
     
     my_prompt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of ten topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
-    print("**********************")
-    print("Asking GPT To Generate a list of Topics")
-    print("**********************")
-    print(my_prompt)
-    print("**********************")
     return ask_chat_gpt_and_get_response(my_prompt, my_prompt)
 
 
@@ -72,7 +67,7 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
     print("ASKING CHAT GPT")
     print("************************************")
     print(f"System Prompt:\n{system_content}")
-    print("\n\n")
+    print("\n")
     print(f"User Prompt:\n{user_content}")
     print("************************************")
 
