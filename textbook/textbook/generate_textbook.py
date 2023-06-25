@@ -16,6 +16,7 @@ NUMBER_OF_CHAPTERS = 1
 EDUCATION_LEVEL = 'simple college'
 MODEL = 'gpt-3.5-turbo'
 NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
+NUMBER_OF_ADDITIONAL_RESOURCES = 'three'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -108,6 +109,9 @@ def get_test_prep_questions_for_subtopic(subtopic):
     system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} questions about {subtopic} that might appear on a test for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
     return ask_chat_gpt_and_get_response(system_content, system_content)
 
+def get_resources_for_subtopic(subtopic):
+    system_content = f"Imagine you teaching a college level class about {subtopic}. Write a list of {NUMBER_OF_ADDITIONAL_RESOURCES} additional resources about {subtopic} that a student could use to learn more. The {NUMBER_OF_DISCUSSION_QUESTIONS} additional resources should be numbered. The response should be formatted as an HTML page."
+    return ask_chat_gpt_and_get_response(system_content, system_content)
 
 from pymongo import MongoClient
 def test_putting_something_in_database():
@@ -156,11 +160,13 @@ def generate_textbook_from_user_input(raw_input):
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
         subtopic_discussion_questions = get_discussion_questions_for_subtopic(subtopic)
         test_prep_questions = get_test_prep_questions_for_subtopic(subtopic)
+        resources = get_resources_for_subtopic(subtopic)
         new_chapter = {
             'chapter_title': subtopic,
             'chapter_content': subtopic_chapter,
             'subtopic_discussion_questions': subtopic_discussion_questions,
             'test_prep_questions': test_prep_questions,
+            'resources': resources,
         }
         subtopic_chapters.append(new_chapter)
     textbook = {
