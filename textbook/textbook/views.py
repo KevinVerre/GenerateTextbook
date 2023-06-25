@@ -100,4 +100,4 @@ def autosuggest(request):
 def run_autosuggest(request):
     context = {}
     generate_auto_books()
-    return None
+    return HttpResponse('The server is now trying to generate new books.')

@@ -17,7 +17,7 @@ EDUCATION_LEVEL = 'simple college'
 MODEL = 'gpt-3.5-turbo'
 NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
 NUMBER_OF_ADDITIONAL_RESOURCES = 'five'
-NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS = 'twenty'
+NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS = 'five'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -299,6 +299,14 @@ def generate_a_book_for_each_item_in_list(list_of_book_ideas):
 def generate_auto_books():
     book_ideas = ask_chat_gpt_for_book_topics()
     generate_a_book_for_each_item_in_list(parse_list_of_book_topics_into_list(book_ideas))
+
+def delete_by_id():
+    id_to_delete = "6498a9a8d5ceabbbd3192c6a"
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+    books_collection.delete_one({"_id": ObjectId(id_to_delete)})
 
 
 def main():
