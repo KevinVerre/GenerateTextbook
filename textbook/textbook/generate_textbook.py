@@ -12,6 +12,7 @@ openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with 
 
 DEBUG = False
 NUMBER_OF_CHAPTERS = 3
+EDUCATION_LEVEL = 'simple college'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -20,9 +21,8 @@ def get_user_input_from_command_line():
 
 
 def get_user_input_plus_our_prompt(the_user_response):
-    return f"{the_user_response} for high school students"
-    # return "Evolutionary biology for high school students"
-    # return input("Enter your message: ")
+    return f"{the_user_response} for {EDUCATION_LEVEL} students"
+
 
 def ask_gpt_to_list_topics(raw_user_input):
     if DEBUG:
@@ -81,13 +81,12 @@ def get_chapter_for_subtopic(subtopic):
     if DEBUG:
         return f"Here is an example chapter about {subtopic}. Blah blah blah."
 
-
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {
                 "role": "system",
-                "content": "You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a high school level. Your response should be formatted as HTML."
+                "content": f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your response should be formatted as HTML."
             },
             {
                 "role": "user",
@@ -161,6 +160,9 @@ def generate_textbook_from_user_input(raw_input):
     return textbook
 
 
+def get_body_contents_from_html_file(html_file_as_str):
+
+    return
 
     
 def main():
