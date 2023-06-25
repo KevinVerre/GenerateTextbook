@@ -98,22 +98,33 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
 
 
 def get_chapter_for_subtopic(subtopic):
-    print(f"Trying to create a chapter about '{subtopic}'. Please be patient...")
+    print(f"Start writing chapter text for {subtopic}")
     system_content = f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your response should be formatted as HTML."
-    return ask_chat_gpt_and_get_response(system_content, subtopic)
+    results = ask_chat_gpt_and_get_response(system_content, subtopic)
+    print(f"End writing chapter text for {subtopic}")
+    return results
 
 
 def get_discussion_questions_for_subtopic(subtopic):
+    print(f"Start DISCUSSION QUESTIONS for {subtopic}")
     system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} discussion questions about {subtopic} for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
-    return ask_chat_gpt_and_get_response(system_content, system_content)
+    results = ask_chat_gpt_and_get_response(system_content, system_content)
+    print(f"End DISCUSSION QUESTIONS for {subtopic}")
+    return results
 
 def get_test_prep_questions_for_subtopic(subtopic):
+    print(f"Start TEST PREP QUESTIONS for {subtopic}")
     system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} questions about {subtopic} that might appear on a test for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
-    return ask_chat_gpt_and_get_response(system_content, system_content)
+    results = ask_chat_gpt_and_get_response(system_content, system_content)
+    print(f"End TEST PREP QUESTIONS for {subtopic}")
+    return results
 
 def get_resources_for_subtopic(subtopic):
+    print(f"Start ADDITIONAL_RESOURCES for {subtopic}")
     system_content = f"Imagine you teaching a college level class about {subtopic}. Write a list of {NUMBER_OF_ADDITIONAL_RESOURCES} additional resources about {subtopic} that a student could use to learn more. The {NUMBER_OF_DISCUSSION_QUESTIONS} additional resources should be numbered. The response should be formatted as an HTML page."
-    return ask_chat_gpt_and_get_response(system_content, system_content)
+    results = ask_chat_gpt_and_get_response(system_content, system_content)
+    print(f"End ADDITIONAL_RESOURCES for {subtopic}")
+    return results
 
 from pymongo import MongoClient
 def test_putting_something_in_database():
@@ -152,9 +163,11 @@ def save_a_new_book_to_our_books_table(book):
     
 
 def generate_textbook_from_user_input(raw_input):
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('Start Generating Textbook Function')
+    print('^^^^^^^^^^^^^^^^^^^')
+    
     gpt_response = ask_gpt_to_list_topics(raw_input)
-    print("GPT-3.5 response:")
-    print(f"{gpt_response}")
     subtopics = divide_response_into_subtopics(gpt_response)
     print(subtopics)
     subtopic_chapters = []
@@ -179,6 +192,10 @@ def generate_textbook_from_user_input(raw_input):
     print(f"textbook: {textbook}")
     new_book_id = save_a_new_book_to_our_books_table(textbook)
     textbook['book_id'] = new_book_id
+
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('End Generating Textbook Function')
+    print('^^^^^^^^^^^^^^^^^^^')
     return textbook
 
 
@@ -196,9 +213,21 @@ def get_body_contents_from_html_file(html_file_contents_as_str):
 
 
 def ask_chat_gpt_for_book_topics():
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('Start Generating a List of Book Topics function')
+    print('^^^^^^^^^^^^^^^^^^^')
+
+
+
     existing_book_titles = get_str_of_all_existing_book_titles()
     context = f"Imagine you are a college student. You want to become incredibly wealthy, happy, successful, wise, smart. Please generate a list of {NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS} topics to study to help you achieve your life goals. These topics should be practical. However, the topics should NOT be related to things in this list: {existing_book_titles}. Format the list with each topic on its own line. And number the list."
-    return ask_chat_gpt_and_get_response(context, context)
+    results = ask_chat_gpt_and_get_response(context, context)
+
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('END Generating a List of Book Topics function')
+    print('^^^^^^^^^^^^^^^^^^^')
+
+    return results
 
 
 def get_str_of_all_existing_book_titles():
