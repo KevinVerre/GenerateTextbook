@@ -1,7 +1,7 @@
 from bson import ObjectId
 from django.shortcuts import redirect, render, HttpResponse
 from pymongo import MongoClient
-from textbook.generate_textbook import generate_textbook_from_user_input
+from textbook.generate_textbook import generate_textbook_from_user_input, get_body_contents_from_html_file
 
 def heythere(request):
     return render(request, 'kevins_demo.html')
@@ -48,10 +48,20 @@ def show_single_textbook(request):
     objInstance = ObjectId(my_id_str)
     my_book = books_collection.find_one({"_id": objInstance})
 
+    chapters_reformatted = []
+    for chapter in my_book.get('chapters', []):
+        content_reformatted = get_body_contents_from_html_file(chapter.get('chapter_content', ''))
+        reformatted_chapter = {
+            **chapter,
+            'chapter_content': content_reformatted,
+        }
+        chapters_reformatted.append(reformatted_chapter)
+
+
     context = {
         'book': {
             'title': my_book.get('title'),
-            'chapters': my_book.get('chapters'),
+            'chapters': chapters_reformatted,
         }
     }
     return render(request, 'book.html', context)

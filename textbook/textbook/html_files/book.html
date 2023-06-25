@@ -2,7 +2,7 @@
     <head>
         <title>Your book</title>
     </head>
-    <body>
+    <body style="margin: 4rem;">
         <a href="/books">BACK to List of Text Books</a><br>
         <a href="/new">Create a New Text Book</a><br>
         <a href="/">BACK to Home Page</a><br>
@@ -21,13 +21,10 @@
         <hr>
         {% for chapter in book.chapters %}
         <br><br>
-        <div>
+        <div style="width: 90%;">
             <h4>Chapter Title: {{ chapter.chapter_title.title }}</h4>
             <div style="width: 90%">
-                <iframe srcdoc="{{ chapter.chapter_content }}"
-                    style="width: 80%; height: 100%"
-                >
-                </iframe>
+                {{ chapter.chapter_content }}
             </div>
         </div>
         <hr>

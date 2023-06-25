@@ -3,6 +3,7 @@ import os
 import sys
 from django.utils.safestring import mark_safe
 from bson import ObjectId
+from bs4 import BeautifulSoup
 
 sys.path.append("..")
 from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
@@ -130,7 +131,6 @@ def save_a_new_book_to_our_books_table(book):
     new_book_id = str(result.inserted_id)
 
     found_new_book = books_collection.find_one({"_id": ObjectId(new_book_id)})
-
     books_collection.update_one({"_id": ObjectId(new_book_id)}, {"$set": {"book_id": new_book_id}})
 
     return new_book_id
@@ -160,9 +160,15 @@ def generate_textbook_from_user_input(raw_input):
     return textbook
 
 
-def get_body_contents_from_html_file(html_file_as_str):
-
-    return
+def get_body_contents_from_html_file(html_file_contents_as_str):
+    html_soup = BeautifulSoup(html_file_contents_as_str, 'html.parser')
+    body_element = html_soup.body
+    if body_element: 
+        body_contents = body_element.contents
+        only_nonempty_lines = list(filter(lambda x: x != '\n', body_contents))
+        only_nonempty_lines_as_strings = list(map(lambda x: str(x), only_nonempty_lines))
+        return mark_safe(''.join(only_nonempty_lines_as_strings))
+    return ''
 
     
 def main():
