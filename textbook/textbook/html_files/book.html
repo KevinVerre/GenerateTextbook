@@ -13,7 +13,7 @@
         {% for chapter in book.chapters %}
         <br><br>
         <div>
-            <h4>Chapter Title: {{ chapter.chapter_title }}</h4>
+            <h4>Chapter Title: {{ chapter.chapter_title.title }}</h4>
             <div style="width: 90%">
                 <iframe srcdoc="{{ chapter.chapter_content }}"
                     style="width: 80%; height: 100%"
@@ -24,5 +24,12 @@
         <hr>
         <br><br>
         {% endfor %}
+
+        <a href="/books">BACK to List of Text Books</a><br>
+        <a href="/new">Create a New Text Book</a><br>
+        <a href="/">BACK to Home Page</a><br>
+        <br>
+        <br>
+        <br>
     </body>
 </html>

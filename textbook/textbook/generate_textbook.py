@@ -61,7 +61,7 @@ def divide_response_into_subtopics(gpt_response):
         if line == '':
             continue # Skip blank lines
         if line[0].isdigit():
-            topics.append(line) # if it starts with a digit, it's probably a good subtopic
+            topics.append(line.title()) # if it starts with a digit, it's probably a good subtopic
             counter += 1
         
 
