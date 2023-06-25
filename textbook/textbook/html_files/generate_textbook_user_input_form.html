@@ -5,13 +5,19 @@
         </title>
     </head>
     <body>
-        <h1>
-            What do you want your textbook to be about?
-        </h1>
-        <form method="POST" action="/create">
-            {% csrf_token %}
-            <input name="user_input" autofocus/>
-            <input type="submit" />
-        </form>
+        <div>
+            <h1>
+                What do you want your textbook to be about?
+            </h1>
+            <form method="POST" action="/create">
+                {% csrf_token %}
+                <input name="user_input" autofocus/>
+                <input type="submit" />
+            </form>
+        </div>
+        <div>
+            <img src="/static/robot_writing_book.png" style="width: 75%; height:75%"/>
+        </div>
+
     </body>
 </html>
