@@ -31,6 +31,10 @@ urlpatterns = [
     path('books/', views.show_textbook_list),
     path('book', views.show_single_textbook),
     path('book/', views.show_single_textbook),
+    path('autosuggest', views.autosuggest),
+    path('autosuggest/', views.autosuggest),
+    path('run_autosuggest', views.run_autosuggest),
+    path('run_autosuggest', views.run_autosuggest),
     path('/', views.homepage),
     path('', views.homepage),
     

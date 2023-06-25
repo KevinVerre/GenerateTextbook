@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Your book</title>
+        <title>{{book.title.title}}</title>
     </head>
     <body style="margin: 4rem;">
         <a href="/books">BACK to List of Text Books</a><br>
@@ -23,13 +23,13 @@
         <div style="padding: 20px; background-color: #f4f4f4; border: solid 2px #CCC;">
             <h3>Table of Contents</h3>
             {% for chapter in book.chapters %}
-                {{ chapter.chapter_title.title }}<br>
+                <b>{{ chapter.chapter_title.title }}</b><br>
                 <div style="margin-left:2rem;">
                     a. Text<br>
                     b. Discussion Questions<br>
                     c. Test Prep Questions<br>
                     d. Additional Resources<br>
-                </div>
+                </div><br>
 
             {% endfor %}
         </div>

@@ -17,6 +17,7 @@ EDUCATION_LEVEL = 'simple college'
 MODEL = 'gpt-3.5-turbo'
 NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
 NUMBER_OF_ADDITIONAL_RESOURCES = 'five'
+NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS = 'twenty'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -60,6 +61,8 @@ def divide_response_into_subtopics(gpt_response):
     return topics
 
 def ask_chat_gpt_and_get_response(system_content, user_content):
+    system_content = system_content.strip()
+    user_content = user_content.strip()
     if DEBUG:
         return f"Blah blah blah. Example text for {system_content} and {user_content}"
     
@@ -70,24 +73,28 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
     print("\n")
     print(f"User Prompt:\n{user_content}")
     print("************************************")
+    print("Please be patient....")
 
-    response = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": system_content,
-            },
-            {
-                "role": "user",
-                "content": user_content
-            }
-        ]
-    )
-    result = response.choices[0].message['content']
-    print(f"Done! Here is the result:\n{result}")
-    print("**************************************")
-    return response.choices[0].message['content']
+    try:
+        response = openai.ChatCompletion.create(
+            model=MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_content,
+                },
+                {
+                    "role": "user",
+                    "content": user_content
+                }
+            ]
+        )
+        result = response.choices[0].message['content']
+        print(f"Done! Here is the result:\n{result}")
+        print("**************************************")
+        return response.choices[0].message['content']
+    except:
+        return ask_chat_gpt_and_get_response(system_content, user_content)
 
 
 def get_chapter_for_subtopic(subtopic):
@@ -164,8 +171,9 @@ def generate_textbook_from_user_input(raw_input):
             'resources': resources,
         }
         subtopic_chapters.append(new_chapter)
+    book_title = raw_input.title()
     textbook = {
-        'title': f"{raw_input.title()}: A Humble Explanation",
+        'title': f"{book_title}: A Humble Explanation",
         'chapters': subtopic_chapters, 
     }
     print(f"textbook: {textbook}")
@@ -186,7 +194,84 @@ def get_body_contents_from_html_file(html_file_contents_as_str):
         return mark_safe(''.join(only_nonempty_lines_as_strings))
     return ''
 
+
+def ask_chat_gpt_for_book_topics():
+    existing_book_titles = get_str_of_all_existing_book_titles()
+    context = f"Imagine you are a college student. You want to become incredibly wealthy, happy, successful, wise, smart. Please generate a list of {NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS} topics to study to help you achieve your life goals. These topics should be practical. However, the topics should NOT be related to things in this list: {existing_book_titles}. Format the list with each topic on its own line. And number the list."
+    return ask_chat_gpt_and_get_response(context, context)
+
+
+def get_str_of_all_existing_book_titles():
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+
+    all_books_in_db = books_collection.find()
+    all_titles = []
+    for book in all_books_in_db:
+        book_title = book.get('title', '')
+        book_title = find_before_substring(book_title, ': A Humble Explanation')
+        book_title = book_title.strip()
+        all_titles.append(book_title)
+
+    retVal = ', '.join(all_titles)
+    return retVal
+
+
+import re
+import string
+
+def remove_starting_digits_and_punct(s):
+    return re.sub(r"^[0-9" + string.punctuation + "]+", "", s)
+
+
+def find_before_substring(main_string, substring):
+    """
+    This function returns everything in the first string that occurs before the second string. 
+    If the second string is not in the first string, it returns all of the first string.
     
+    Parameters:
+    main_string (str): The main string in which to find the substring.
+    substring (str): The substring to find in the main string.
+
+    Returns:
+    str: The part of the main string before the substring, or the whole main string if the substring is not found.
+    """
+    # Find the index of the substring in the main string
+    index = main_string.find(substring)
+
+    # If the substring is not found, return the whole main string
+    if index == -1:
+        return main_string
+
+    # If the substring is found, return the part of the main string before it
+    else:
+        return main_string[:index]
+    
+
+def parse_list_of_book_topics_into_list(gpt_response):
+    lines = gpt_response.split('\n')
+    topics = []
+    for line in lines:
+        if line == '':
+            continue # Skip blank lines
+        if line[0].isdigit():
+            line = remove_starting_digits_and_punct(line)
+            topics.append(line.title()) # if it starts with a digit, it's probably a good subtopic
+    return topics        
+
+
+def generate_a_book_for_each_item_in_list(list_of_book_ideas):
+    for book_idea in list_of_book_ideas:
+        generate_textbook_from_user_input(book_idea)
+
+
+def generate_auto_books():
+    book_ideas = ask_chat_gpt_for_book_topics()
+    generate_a_book_for_each_item_in_list(parse_list_of_book_topics_into_list(book_ideas))
+
+
 def main():
     print("starting main()")
     #test_putting_something_in_database()
