@@ -7,10 +7,10 @@
         <a href="/new">Create a New Text Book</a><br>
         <a href="/">BACK to Home Page</a><br>
         <h4>Book Title:</h4>
-        <div style="background-color: lightcyan; padding-top: 10px; padding-bottom: 10px;">
+        <div style="background-color: lightcyan; padding-top: 10px; padding-bottom: 10px; padding-left: 5px; padding-right:5px; border: solid 1px #7CC">
             <h1><b><i>"{{ book.title.title }}"</i></b></h1>
         </div>
-        <div style="background-color: lightyellow">
+        <div style="background-color: lightyellow; padding: 10px; border: solid 1px #CC5; margin-top: 5px;">
             <i>
             Disclaimer: Don't believe anything you read without thoroughly testing it yourself.<br><br>
             Facts may be incorrect! Information that sounds correct may actually be nonsense! Baloney! Hogwash! Mularky!<br><br>
@@ -19,12 +19,23 @@
         </div>
         <p>This book has {{book.chapters|length}} chapters.</p>
         <hr>
+
+
         {% for chapter in book.chapters %}
         <br><br>
         <div style="width: 90%;">
-            <h4>Chapter Title: {{ chapter.chapter_title.title }}</h4>
+            <div>
+                <h4>Chapter Title: {{ chapter.chapter_title.title }}</h4>
+            </div>
             <div style="width: 90%">
                 {{ chapter.chapter_content }}
+            </div>
+            <br><br>
+            <div style="background-color: #EFE; padding:30px; border: solid 1px #8C8">
+                <h5>Discussion questions!</h5>
+                <div>
+                    {{ chapter.discussion_questions_reformatted }}
+                </div>
             </div>
         </div>
         <hr>

@@ -12,10 +12,10 @@ from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
 DEBUG = False
-NUMBER_OF_CHAPTERS = 3
+NUMBER_OF_CHAPTERS = 1
 EDUCATION_LEVEL = 'simple college'
-# MODEL = 'text-davinci-003'
 MODEL = 'gpt-3.5-turbo'
+NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -25,7 +25,6 @@ def get_user_input_from_command_line():
 
 def get_user_input_plus_our_prompt(the_user_response):
     return f"{the_user_response} for {EDUCATION_LEVEL} students"
-
 
 def ask_gpt_to_list_topics(raw_user_input):
     if DEBUG:
@@ -37,22 +36,8 @@ def ask_gpt_to_list_topics(raw_user_input):
     print("**********************")
     print(my_prompt)
     print("**********************")
+    return ask_chat_gpt_and_get_response(my_prompt, my_prompt)
 
-    
-    response = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": my_prompt
-            },
-            {
-                "role": "user",
-                "content": my_prompt
-            }
-        ]
-    )
-    return response.choices[0].message['content']
 
 def divide_response_into_subtopics(gpt_response):
     lines = gpt_response.split('\n')
@@ -78,28 +63,37 @@ def divide_response_into_subtopics(gpt_response):
 
     return topics
 
-def get_chapter_for_subtopic(subtopic):
-    print(f"Trying to create a chapter about '{subtopic}'. Please be patient...")
-
+def ask_chat_gpt_and_get_response(system_content, user_content):
     if DEBUG:
-        return f"Here is an example chapter about {subtopic}. Blah blah blah."
-
+        return f"Blah blah blah. Example text for {system_content} and {user_content}"
+    
     response = openai.ChatCompletion.create(
         model=MODEL,
         messages=[
             {
                 "role": "system",
-                "content": f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your response should be formatted as HTML."
+                "content": system_content,
             },
             {
                 "role": "user",
-                "content": subtopic
+                "content": user_content
             }
         ]
     )
     result = response.choices[0].message['content']
     print(f"Done! Here is the result: {result}")
     return response.choices[0].message['content']
+
+
+def get_chapter_for_subtopic(subtopic):
+    print(f"Trying to create a chapter about '{subtopic}'. Please be patient...")
+    system_content = f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your response should be formatted as HTML."
+    return ask_chat_gpt_and_get_response(system_content, subtopic)
+
+
+def get_discussion_questions_for_subtopic(subtopic):
+    system_content = f"Imagine you are teaching a college level class about {subtopic}. Write {NUMBER_OF_DISCUSSION_QUESTIONS} discussion questions about {subtopic} for the class. The {NUMBER_OF_DISCUSSION_QUESTIONS} questions should be numbered. The response should be formatted as an HTML page."
+    return ask_chat_gpt_and_get_response(system_content, system_content)
 
 
 from pymongo import MongoClient
@@ -147,9 +141,11 @@ def generate_textbook_from_user_input(raw_input):
     subtopic_chapters = []
     for subtopic in subtopics:
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
+        subtopic_discussion_questions = get_discussion_questions_for_subtopic(subtopic)
         new_chapter = {
             'chapter_title': subtopic,
-            'chapter_content': mark_safe(subtopic_chapter),
+            'chapter_content': subtopic_chapter,
+            'subtopic_discussion_questions': subtopic_discussion_questions,
         }
         subtopic_chapters.append(new_chapter)
     textbook = {
@@ -163,6 +159,8 @@ def generate_textbook_from_user_input(raw_input):
 
 
 def get_body_contents_from_html_file(html_file_contents_as_str):
+    if not html_file_contents_as_str:
+        return ''
     html_soup = BeautifulSoup(html_file_contents_as_str, 'html.parser')
     body_element = html_soup.body
     if body_element: 
