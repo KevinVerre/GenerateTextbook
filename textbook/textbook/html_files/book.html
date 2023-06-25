@@ -7,7 +7,9 @@
         <a href="/new">Create a New Text Book</a><br>
         <a href="/">BACK to Home Page</a><br>
         <h4>Book Title:</h4>
-        <h1>"{{ book.title.title }}"</h1>
+        <div style="background-color: lightcyan; padding-top: 10px; padding-bottom: 10px;">
+            <h1><b><i>"{{ book.title.title }}"</i></b></h1>
+        </div>
         <p>This book has {{book.chapters|length}} chapters.</p>
         <hr>
         {% for chapter in book.chapters %}
