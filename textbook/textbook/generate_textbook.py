@@ -368,6 +368,8 @@ def save_url_html_to_file(url, file_path):
             file.write(html_content)
     else:
         print(f"Failed to get HTML from URL. Status code: {response.status_code}")
+    
+    print(f"URL:\n{url}\nPATH:\n{file_path}")
 
 
 
@@ -375,18 +377,19 @@ def given_a_book_id_return_the_book_url(book_id):
     return f'http://127.0.0.1:8000/book?id={book_id}'
 
 def given_a_book_id_return_a_file_path(book_id):
-    return f'/Users/kevinverre/code/exported_html/{book_id}.html'
+    return f'/Users/kevinverre/code/turbo_school_readonly_online_demo/exported_html/{book_id}.html'
 
 def scrape_all_books():
     book_ids = get_a_list_of_all_book_ids()
-    book_ids = book_ids[0:1]
     for book_id in book_ids:
         book_url = given_a_book_id_return_the_book_url(book_id)
         book_path = given_a_book_id_return_a_file_path(book_id)
         save_url_html_to_file(book_url, book_path)
-        print(f"URL:\n{book_url}\nPATH:\n{book_path}")
 
 
+def scrape_the_books_list_page():
+    save_url_html_to_file('http://127.0.0.1:8000/books', '/Users/kevinverre/code/turbo_school_readonly_online_demo/index.html')
+    return
 
 
 def main():

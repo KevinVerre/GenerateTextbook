@@ -1,7 +1,7 @@
 from bson import ObjectId
 from django.shortcuts import redirect, render, HttpResponse
 from pymongo import MongoClient
-from textbook.generate_textbook import generate_textbook_from_user_input, get_body_contents_from_html_file, generate_auto_books, auto_book_idea_one_at_a_time, scrape_all_books
+from textbook.generate_textbook import scrape_the_books_list_page, generate_textbook_from_user_input, get_body_contents_from_html_file, generate_auto_books, auto_book_idea_one_at_a_time, scrape_all_books
 
 def heythere(request):
     return render(request, 'kevins_demo.html')
@@ -104,4 +104,5 @@ def run_autosuggest(request):
 
 def debug(request):
     scrape_all_books()
+    # scrape_the_books_list_page()
     return HttpResponse('The server finished running the debug function.')
