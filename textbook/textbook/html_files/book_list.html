@@ -14,7 +14,7 @@
         {% for book_row in all_books %}
 
             <div>
-                <a href="/book?id={{book_row.book_id}}">{{ forloop.counter }}. {{ book_row.title.title }}</a><br><br>
+                <a class='table-of-contents-a' href="/book?id={{book_row.book_id}}">{{ forloop.counter }}. {{ book_row.title.title }}</a><br><br>
             </div>
 
         {% endfor %}

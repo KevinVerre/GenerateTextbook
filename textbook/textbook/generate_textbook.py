@@ -230,13 +230,26 @@ def ask_chat_gpt_for_book_topics():
     return results
 
 
+def get_a_list_of_all_book_ids():
+    CONNECTION_STRING = "mongodb://localhost:27017/"
+    client = MongoClient(CONNECTION_STRING)
+    db = client['textbook']
+    books_collection = db['books']
+
+    all_book_ids = []
+    for book in books_collection.find({}):
+        book_id = str(book.get('_id', ''))
+        all_book_ids.append(book_id)
+
+    return all_book_ids
+
 def get_str_of_all_existing_book_titles():
     CONNECTION_STRING = "mongodb://localhost:27017/"
     client = MongoClient(CONNECTION_STRING)
     db = client['textbook']
     books_collection = db['books']
 
-    all_books_in_db = books_collection.find()
+    all_books_in_db = books_collection.find({})
     all_titles = []
     for book in all_books_in_db:
         book_title = book.get('title', '')
@@ -307,6 +320,73 @@ def delete_by_id():
     db = client['textbook']
     books_collection = db['books']
     books_collection.delete_one({"_id": ObjectId(id_to_delete)})
+
+
+def ask_chat_gpt_for_single_new_book_idea():
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('Start Generating a List of Book Topics function')
+    print('^^^^^^^^^^^^^^^^^^^')
+
+
+
+    existing_book_titles = get_str_of_all_existing_book_titles()
+    context = f"Imagine you are a college student. You want to become incredibly wealthy, happy, successful, wise, smart. Please generate a list of two topics to study to help you achieve your life goals. These topics should be practical. However, the topics should NOT be related to things in this list: {existing_book_titles}. Format the list with each topic on its own line. And number the list."
+    results = ask_chat_gpt_and_get_response(context, context)
+
+    print('^^^^^^^^^^^^^^^^^^^')
+    print('END Generating a List of Book Topics function')
+    print('^^^^^^^^^^^^^^^^^^^')
+
+    results = parse_list_of_book_topics_into_list(results)
+    if len(results) > 1: 
+        results = results[0:1]
+    return results
+
+
+
+def auto_book_idea_one_at_a_time():
+    counter = 0
+    while counter < 5:
+        single_idea = ask_chat_gpt_for_single_new_book_idea()
+        generate_a_book_for_each_item_in_list(single_idea)
+        counter = counter + 1
+
+
+import requests
+
+def save_url_html_to_file(url, file_path):
+    # Send a GET request to the URL
+    response = requests.get(url)
+    
+    # If the GET request is successful, the status code will be 200
+    if response.status_code == 200:
+        # Get the content of the response
+        html_content = response.text
+        
+        # Open the file in write mode and write the HTML content to it
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(html_content)
+    else:
+        print(f"Failed to get HTML from URL. Status code: {response.status_code}")
+
+
+
+def given_a_book_id_return_the_book_url(book_id):
+    return f'http://127.0.0.1:8000/book?id={book_id}'
+
+def given_a_book_id_return_a_file_path(book_id):
+    return f'/Users/kevinverre/code/exported_html/{book_id}.html'
+
+def scrape_all_books():
+    book_ids = get_a_list_of_all_book_ids()
+    book_ids = book_ids[0:1]
+    for book_id in book_ids:
+        book_url = given_a_book_id_return_the_book_url(book_id)
+        book_path = given_a_book_id_return_a_file_path(book_id)
+        save_url_html_to_file(book_url, book_path)
+        print(f"URL:\n{book_url}\nPATH:\n{book_path}")
+
+
 
 
 def main():

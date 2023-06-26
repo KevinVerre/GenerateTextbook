@@ -35,6 +35,8 @@ urlpatterns = [
     path('autosuggest/', views.autosuggest),
     path('run_autosuggest', views.run_autosuggest),
     path('run_autosuggest', views.run_autosuggest),
+    path('debug', views.debug),
+    path('debug/', views.debug),
     path('/', views.homepage),
     path('', views.homepage),
     
