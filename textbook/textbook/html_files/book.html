@@ -27,7 +27,9 @@
                     a. Text<br>
                     b. Discussion Questions<br>
                     c. Test Prep Questions<br>
+                    {% if show_additional_resources %}
                     d. Additional Resources<br>
+                    {% endif %}
                 </div><br>
 
             {% endfor %}
@@ -56,6 +58,7 @@
                     {{ chapter.test_prep_questions_reformatted }}
                 </div>
             </div>
+            {% if show_additional_resources %}
             <br>
             <div style="background-color: #ebf3ff; padding:15px; border: solid 1px #91bdff">
                 <h5>Additional Resources!</h5>
@@ -63,6 +66,7 @@
                     {{ chapter.resources_reformatted }}
                 </div>
             </div>
+            {% endif %}
         </div>
         <hr>
         <br><br>

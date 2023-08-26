@@ -65,6 +65,7 @@ def show_single_textbook(request):
 
 
     context = {
+        'show_additional_resources': False,
         'book': {
             'title': my_book.get('title'),
             'chapters': chapters_reformatted,
