@@ -11,13 +11,30 @@ from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
+LIST_OF_GPT_MODELS = [
+    'gpt-3.5-turbo',
+    'gpt-4',
+]
+
 DEBUG = False
 NUMBER_OF_CHAPTERS = 5
 EDUCATION_LEVEL = 'simple college'
-MODEL = 'gpt-3.5-turbo'
+MODEL = LIST_OF_GPT_MODELS[0]
 NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
 NUMBER_OF_ADDITIONAL_RESOURCES = 'five'
 NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS = 'five'
+ASK_FOR_ADDITONAL_RESOURCES = False
+
+def compute_total_number_of_api_requests():
+    total = 0
+    total += 1 # ask_gpt_to_list_subtopics
+    total += NUMBER_OF_CHAPTERS # one for each blog article
+    total += NUMBER_OF_CHAPTERS # one for each discussion quesion set
+    total += NUMBER_OF_CHAPTERS # one for each test prep question set
+    if ASK_FOR_ADDITONAL_RESOURCES:
+        total += NUMBER_OF_CHAPTERS # one for each additional resource set
+
+    
 
 def get_user_input_from_command_line():
     print("Enter a topic you want to learn about. Then hit enter:")
@@ -28,7 +45,7 @@ def get_user_input_from_command_line():
 def get_user_input_plus_our_prompt(the_user_response):
     return f"{the_user_response} for {EDUCATION_LEVEL} students"
 
-def ask_gpt_to_list_topics(raw_user_input):
+def ask_gpt_to_list_subtopics(raw_user_input):
     if DEBUG:
         return "1. Music\n2.Dance\n3.Singing"
     
@@ -167,7 +184,7 @@ def generate_textbook_from_user_input(raw_input):
     print('Start Generating Textbook Function')
     print('^^^^^^^^^^^^^^^^^^^')
     
-    gpt_response = ask_gpt_to_list_topics(raw_input)
+    gpt_response = ask_gpt_to_list_subtopics(raw_input)
     subtopics = divide_response_into_subtopics(gpt_response)
     print(subtopics)
     subtopic_chapters = []
@@ -175,7 +192,10 @@ def generate_textbook_from_user_input(raw_input):
         subtopic_chapter = get_chapter_for_subtopic(subtopic)
         subtopic_discussion_questions = get_discussion_questions_for_subtopic(subtopic)
         test_prep_questions = get_test_prep_questions_for_subtopic(subtopic)
-        resources = get_resources_for_subtopic(subtopic)
+        if ASK_FOR_ADDITONAL_RESOURCES:
+            resources = get_resources_for_subtopic(subtopic)
+        else:
+            resources = None
         new_chapter = {
             'chapter_title': subtopic,
             'chapter_content': subtopic_chapter,
@@ -390,27 +410,3 @@ def scrape_all_books():
 def scrape_the_books_list_page():
     save_url_html_to_file('http://127.0.0.1:8000/books', '/Users/kevinverre/code/turbo_school_readonly_online_demo/index.html')
     return
-
-
-def main():
-    print("starting main()")
-    #test_putting_something_in_database()
-    print("Ending main()")
-    return
-
-    # while True:
-    raw_input = get_user_input_from_command_line()
-    gpt_response = ask_gpt_to_list_topics(raw_input)
-    print("GPT-3.5 response:")
-    print(f"{gpt_response}")
-    subtopics = divide_response_into_subtopics(gpt_response)
-    for subtopic in subtopics:
-        print("\n\n")
-        print(f"CHAPTER: {subtopic}")
-        subtopic_chapter = get_chapter_for_subtopic(subtopic)
-        print(f"{subtopic_chapter}")
-
-# if __name__ == "__main__":
-#     main()
-
-
