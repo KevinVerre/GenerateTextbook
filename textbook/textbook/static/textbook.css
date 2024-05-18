@@ -1,17 +1,57 @@
-.rotate {
-    animation: rotation 64s infinite linear;
-}
-  
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(359deg);
-    }
-}
 
 .round {
     border-radius: 100%;
     border: solid 5px black;
 }
+
+@keyframes rotation {
+    0% {
+        transform: rotate(-30deg);
+    }
+    50% {
+        transform: rotate(30deg);
+    }
+    100% {
+        transform: rotate(-30deg);
+    }
+}
+
+@keyframes scaleAnimation {
+    0% {
+      transform: scale(0.75);
+    }
+    50% {
+      transform: scale(1.0);
+    }
+    100% {
+      transform: scale(0.75);
+    }
+}
+
+@keyframes skewAnimation {
+    0% {
+      transform: skew(0deg);
+    }
+    50% {
+        transform: skew(20deg);
+    }
+    50% {
+        transform: skew(-20deg);
+    }
+    100% {
+        transform: skew(0deg);
+    }
+}
+
+.rotate {
+    animation: rotation 7s infinite linear;
+}  
+  
+.scaling-animation {
+    animation: scaleAnimation 5s infinite;
+}
+
+.skew-animation {
+    animation: skewAnimation 4s infinite;
+}
+  

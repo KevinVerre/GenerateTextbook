@@ -1,29 +1,34 @@
 import openai
-import os
-import sys
 from django.utils.safestring import mark_safe
 from bson import ObjectId
 from bs4 import BeautifulSoup
+from pymongo import MongoClient
+import re
+import string
+import requests
 
+import sys
 sys.path.append("..")
 from secret_values import MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX
 
 
+
+GPT_3_5_TURBO = 'gpt-3.5-turbo'
+GPT_4 = 'gpt-4'
+GPT_4OMNI = 'gpt-4o'
+
+MODEL = GPT_4OMNI
+NUMBER_OF_CHAPTERS = 20
+NUMBER_OF_CHAPTERS_SPELLED_OUT = 'twenty'
+EDUCATION_LEVEL = 'simple college'
+NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
+NUMBER_OF_ADDITIONAL_RESOURCES = 'two'
+ASK_FOR_ADDITONAL_RESOURCES = False
+DEBUG = False
 openai.api_key = MY_SECRET_CHAT_GPT_KEY_PLS_DONT_STEAL_THIS_THX  # replace with your OpenAI API key
 
-LIST_OF_GPT_MODELS = [
-    'gpt-3.5-turbo',
-    'gpt-4',
-]
-
-DEBUG = False
-NUMBER_OF_CHAPTERS = 5
-EDUCATION_LEVEL = 'simple college'
-MODEL = LIST_OF_GPT_MODELS[0]
-NUMBER_OF_DISCUSSION_QUESTIONS = 'five'
-NUMBER_OF_ADDITIONAL_RESOURCES = 'five'
+# Auto Book Generator
 NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS = 'five'
-ASK_FOR_ADDITONAL_RESOURCES = False
 
 def compute_total_number_of_api_requests():
     total = 0
@@ -49,7 +54,7 @@ def ask_gpt_to_list_subtopics(raw_user_input):
     if DEBUG:
         return "1. Music\n2.Dance\n3.Singing"
     
-    my_prompt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of ten topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
+    my_prompt = f"Imagine you are going to write a textbook about {raw_user_input}. Generate a list of {NUMBER_OF_CHAPTERS_SPELLED_OUT} topics related to {raw_user_input}. Return a list where each item in the list starts with a number."
     return ask_chat_gpt_and_get_response(my_prompt, my_prompt)
 
 
@@ -116,7 +121,7 @@ def ask_chat_gpt_and_get_response(system_content, user_content):
 
 def get_chapter_for_subtopic(subtopic):
     print(f"Start writing chapter text for {subtopic}")
-    system_content = f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your response should be formatted as HTML."
+    system_content = f"You are writing a chapter of a text book. The user will give you a topic of the chapter. Please write a textbook chapter explaining the topic. Assume a {EDUCATION_LEVEL} level. Your explanation should be easy to understand. Your response should be formatted as HTML."
     results = ask_chat_gpt_and_get_response(system_content, subtopic)
     print(f"End writing chapter text for {subtopic}")
     return results
@@ -143,7 +148,6 @@ def get_resources_for_subtopic(subtopic):
     print(f"End ADDITIONAL_RESOURCES for {subtopic}")
     return results
 
-from pymongo import MongoClient
 def test_putting_something_in_database():
     print('Starting test_putting_something_in_database()')
     test_data = {
@@ -240,7 +244,7 @@ def ask_chat_gpt_for_book_topics():
 
 
     existing_book_titles = get_str_of_all_existing_book_titles()
-    context = f"Imagine you are a college student. You want to become incredibly wealthy, happy, successful, wise, smart. Please generate a list of {NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS} topics to study to help you achieve your life goals. These topics should be practical. However, the topics should NOT be related to things in this list: {existing_book_titles}. Format the list with each topic on its own line. And number the list."
+    context = f"Imagine you are a college student. You want to become incredibly wealthy, happy, successful, wise, smart. Please generate a list of {NUMBER_OF_AUTO_SUGGESTED_BOOK_IDEAS} topics to study to help you achieve your life goals. These topics should be practical. However, the topics should NOT be related to things in this list: {existing_book_titles}. Each idea should be no more than ten words long. Format the list with each topic on its own line. And number the list."
     results = ask_chat_gpt_and_get_response(context, context)
 
     print('^^^^^^^^^^^^^^^^^^^')
@@ -280,9 +284,6 @@ def get_str_of_all_existing_book_titles():
     retVal = ', '.join(all_titles)
     return retVal
 
-
-import re
-import string
 
 def remove_starting_digits_and_punct(s):
     return re.sub(r"^[0-9" + string.punctuation + "]+", "", s)
@@ -371,8 +372,6 @@ def auto_book_idea_one_at_a_time():
         generate_a_book_for_each_item_in_list(single_idea)
         counter = counter + 1
 
-
-import requests
 
 def save_url_html_to_file(url, file_path):
     # Send a GET request to the URL
